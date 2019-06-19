@@ -1,8 +1,9 @@
 <template lang="pug">
-  div.gav(v-if='open')
-    .tap-target
+  div.wrapper(v-if='open')
+    div.tap-target
+      div.overlay(:style="overlayStyle")
       div.circle(:style="circleStyle" ref="circle")
-        .waves-effect
+        div.waves-effect
       div.content(:style="contentStyle" ref="content")
         h3 Title this text
         |Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -69,9 +70,13 @@ const defaultShadowSpread = 278
 export default {
   name: 'HelloWorld',
   props: {
-    color: {
+    boxShadowColor: {
       type: String,
       default: 'rgba(30, 143, 255, 0.719)'
+    },
+    overlayColor: {
+      type: String,
+      default: 'rgba(0, 0, 0, 0.35)'
     }
   },
   data () {
@@ -87,6 +92,9 @@ export default {
       content: {
         top: 0,
         left: 0
+      },
+      overlay: {
+        shadowSpread: null
       }
     }
   },
@@ -100,7 +108,7 @@ export default {
           this.circle.shadowY + 'px',
           '0',
           this.circle.shadowSpread + 'px',
-          this.color
+          this.boxShadowColor
         ].join(' ')
       }
     },
@@ -108,6 +116,18 @@ export default {
       return {
         top: this.content.top + 'px',
         left: this.content.left + 'px'
+      }
+    },
+    overlayStyle () {
+      return {
+        //  box-shadow: 0px 0px 0px 100vh rgba(0, 0, 0, 0.2)
+        top: this.circle.top + 'px',
+        left: this.circle.left + 'px',
+        boxShadow: [
+          '0px', '0px', '0px',
+          this.overlay.shadowSpread + 'px',
+          this.overlayColor
+        ].join(' ')
       }
     }
   },
@@ -130,9 +150,10 @@ export default {
         this.circle.left = x - circleHalfHeight
         this.circle.top = y - circleHalfWidth
 
-        // get width screen
+        // Get width screen
         var windowDimention = getWindowDimention()
         var w = windowDimention[0]
+        this.overlay.shadowSpread = w + (w / 2)
 
         // Get Corner was clicked Name
         var cornerName = detectionCorner(x, y)
@@ -258,20 +279,28 @@ export default {
     0%
       opacity  0
     100%
-      opacit 1
+      opacity 1
+
+  .overlay
+    width: 88px
+    height: 88px
+    border-radius: 50%
+    position: absolute
+    transition: top 0.5s ease, left 0.5s ease
 
   .tap-target
     border-radius: 50%
     z-index: 1000
     box-sizing: inherit
     position: absolute
-    .circle
-      border-radius: 50%
-      width: 88px
-      height: 88px
-      z-index: 1000
-      position: absolute
-      transition: all 0.5s ease
+
+  .circle
+    border-radius: 50%
+    width: 88px
+    height: 88px
+    z-index: 1000
+    position: absolute
+    transition: all 0.5s ease
 
   .waves-effect
     width: 88px
@@ -297,4 +326,12 @@ export default {
     text-align:justify
     brder: 1px solid red
 
+  .wrapper
+    position: fixed
+    height: 100%
+    width: 100%
+    left: 0
+    top: 0
+    overflow: hidden
+    z-index: 10003
 </style>
