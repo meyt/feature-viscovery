@@ -1,6 +1,9 @@
 <template lang="pug">
   div.cotainer(@click="clickContainer")
     featureViscovery(ref='tap_target')
+      h3 Title this text
+      |Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      |Quam expedita laborum nemo! Illo eaque iste explicabo. Vel animi
     v-layout(row wrap)
       v-flex(xs2)
         v-navigation-drawer(v-model='drawer' :mini-variant.sync="mini" hide-overlay stateless height="100vh")
@@ -30,8 +33,8 @@
                 v-list-tile-title {{ item.title }}
       v-flex(xs10)
         div.text-lg-right
-          v-btn(color='success' @click= 'openTaregt()') open
-          v-btn(color='error' @click= 'closeTaregt()') close
+          v-btn.open(color='success' @click= 'openTaregt()') open
+          v-btn.close(color='error' @click= 'closeTaregt()') close
     div.purple
     div.blue
     div.lime
@@ -65,10 +68,16 @@ export default {
     closeTaregt () {
       this.$refs.tap_target.closeTaregt()
     },
+    onClick (elementsPoint) {
+      this.$refs.tap_target.onClick(elementsPoint)
+    },
     clickContainer (e) {
       var x = e.clientX
       var y = e.clientY
+      var elementsPoint = document.elementsFromPoint(x, y)
+      console.log('--------------------')
       this.openTaregt(x, y)
+      this.onClick(elementsPoint)
     }
   }
 }

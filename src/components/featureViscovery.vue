@@ -5,12 +5,9 @@
       div.circle(:style="circleStyle" ref="circle")
         div.waves-effect
       div.content(:style="contentStyle" ref="content")
-        h3 Title this text
-        |Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        |Quam expedita laborum nemo! Illo eaque iste explicabo. Vel animi
+        slot
 </template>
 <script>
-// get Window Dimention
 function getWindowDimention () {
   return [
     Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
@@ -18,7 +15,6 @@ function getWindowDimention () {
   ]
 }
 
-// get Zone By Position
 function getZoneByPosition (x, y) {
   const windowDimention = getWindowDimention()
   const w = windowDimention[0]
@@ -28,7 +24,6 @@ function getZoneByPosition (x, y) {
   return [yName, xName].join('')
 }
 
-//  Detection Corner
 function detectionCorner (x, y) {
   const windowDimention = getWindowDimention()
   const w = windowDimention[0]
@@ -64,6 +59,13 @@ function detectionCorner (x, y) {
 
   return 'noInCorner'
 }
+function allDescendants (node, childsArray) {
+  for (var i = 0; i < node.childNodes.length; i++) {
+    var child = node.childNodes[i]
+    childsArray.push(child)
+    allDescendants(child, childsArray)
+  }
+}
 
 const defaultShadowSpread = 278
 
@@ -83,15 +85,15 @@ export default {
     return {
       open: false,
       circle: {
-        left: 0,
-        top: 0,
+        left: null,
+        top: null,
         shadowX: 0,
         shadowY: 0,
-        shadowSpread: defaultShadowSpread
+        shadowSpread: 0
       },
       content: {
-        top: 0,
-        left: 0
+        top: null,
+        left: null
       },
       overlay: {
         shadowSpread: null
@@ -101,8 +103,8 @@ export default {
   computed: {
     circleStyle () {
       return {
-        top: this.circle.top + 'px',
-        left: this.circle.left + 'px',
+        top: this.circle.top === null ? null : this.circle.top + 'px',
+        left: this.circle.left === null ? null : this.circle.left + 'px',
         boxShadow: [
           this.circle.shadowX + 'px',
           this.circle.shadowY + 'px',
@@ -120,9 +122,8 @@ export default {
     },
     overlayStyle () {
       return {
-        //  box-shadow: 0px 0px 0px 100vh rgba(0, 0, 0, 0.2)
-        top: this.circle.top + 'px',
-        left: this.circle.left + 'px',
+        top: this.content.top === null ? null : this.circle.top + 'px',
+        left: this.content.left === null ? null : this.circle.left + 'px',
         boxShadow: [
           '0px', '0px', '0px',
           this.overlay.shadowSpread + 'px',
@@ -140,7 +141,9 @@ export default {
     openTaregt (x, y) {
       this.open = true
       this.$nextTick(() => {
-        // Get Wave height and width
+        // Content distance from top to circle or margin top
+        const contentDistanceToCircle = 25
+
         const circleHalfHeight = this.$refs.circle.clientHeight / 2
         const circleHalfWidth = this.$refs.circle.clientWidth / 2
 
@@ -150,115 +153,111 @@ export default {
         this.circle.left = x - circleHalfHeight
         this.circle.top = y - circleHalfWidth
 
-        // Get width screen
         var windowDimention = getWindowDimention()
         var w = windowDimention[0]
         this.overlay.shadowSpread = w + (w / 2)
 
-        // Get Corner was clicked Name
         var cornerName = detectionCorner(x, y)
 
-        // Corner topLeft
+        // ------------- If point(x,y) was In Corner --------------------------
         if (cornerName === 'cornerTopLeft') {
-          this.content.top = y + circleHalfHeight + 25
+          this.content.top = y + circleHalfHeight + contentDistanceToCircle
           this.content.left = circleHalfWidth
           this.resetCircleShadow()
         }
-
-        // Corner bottomLeft
         if (cornerName === 'cornerBottomLeft') {
-          this.content.top = y - circleHalfHeight - contentHeight - 25
+          this.content.top = y - circleHalfHeight - contentHeight - contentDistanceToCircle
           this.content.left = circleHalfWidth
           this.resetCircleShadow()
         }
-
-        // Corner topRight
         if (cornerName === 'cornerTopRight') {
-          this.content.top = y + circleHalfHeight + 25
+          this.content.top = y + circleHalfHeight + contentDistanceToCircle
           this.content.left = x - contentWidth
           this.resetCircleShadow()
         }
-
-        // Corner bottomRight
         if (cornerName === 'cornerBottomRight') {
-          this.content.top = y - circleHalfHeight - contentHeight - 25
+          this.content.top = y - circleHalfHeight - contentHeight - contentDistanceToCircle
           this.content.left = x - contentWidth
           this.resetCircleShadow()
         }
 
-        // ---------If Not In Corner now Detect areas-----------------------
-
-        // get Position Name was clicked
+        // --------- If point(x,y) wasn't In Corner now Detect areas-----------
         var position = getZoneByPosition(x, y)
 
-        // 1: TopLeft
         if (cornerName === 'noInCorner' && position === 'topLeft') {
           this.circle.shadowX = circleHalfWidth
           this.circle.shadowY = contentHeight
-          this.circle.shadowSpread = contentHeight + 40
-
-          this.content.top = y + circleHalfHeight + 40
+          this.circle.shadowSpread = contentHeight + circleHalfHeight
+          this.content.top = y + circleHalfHeight + circleHalfHeight
           let left = x - circleHalfHeight
           let overflow = Math.abs(w - (left + contentWidth))
           if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - 20
+            this.content.left = left - overflow - (circleHalfWidth / 2)
           } else if (x < circleHalfWidth) {
             this.content.left = 0
           } else {
             this.content.left = left
           }
         }
-        // 2: TopRight
         if (cornerName === 'noInCorner' && position === 'topRight') {
           this.circle.shadowX = -circleHalfWidth
           this.circle.shadowY = contentHeight
-          this.circle.shadowSpread = contentHeight + 40
-
-          this.content.top = y + circleHalfHeight + 40
-
-          let left = x - (circleHalfWidth * 2 + 60)
+          this.circle.shadowSpread = contentHeight + circleHalfHeight
+          this.content.top = y + circleHalfHeight + circleHalfHeight
+          let left = x - (circleHalfWidth + contentHeight)
           let overflow = Math.abs(w - (left + contentWidth))
           if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - (circleHalfWidth - 16)
+            this.content.left = left - overflow - (circleHalfWidth / 5)
           } else {
-            this.content.left = x - (circleHalfWidth * 2 + 60)
+            this.content.left = x - (circleHalfWidth + contentHeight)
           }
         }
-        // 3:bottomLeft
         if (cornerName === 'noInCorner' && position === 'bottomLeft') {
           this.circle.shadowX = circleHalfWidth
           this.circle.shadowY = -contentHeight
-          this.circle.shadowSpread = contentHeight + 40
-
+          this.circle.shadowSpread = contentHeight + circleHalfHeight
           this.content.top = (y - (contentHeight + (circleHalfWidth * 2)))
-
           let left = x - circleHalfHeight
           let overflow = Math.abs(w - (left + contentWidth))
           if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - 20
+            this.content.left = left - overflow - (circleHalfWidth / 2)
           } else if (x < circleHalfWidth) {
             this.content.left = 0
           } else {
             this.content.left = left
           }
         }
-        // 4:bottomRight
         if (cornerName === 'noInCorner' && position === 'bottomRight') {
           this.circle.shadowX = -circleHalfWidth
           this.circle.shadowY = -contentHeight
-          this.circle.shadowSpread = contentHeight + 40
-
+          this.circle.shadowSpread = contentHeight + circleHalfHeight
           this.content.top = y - (contentHeight + (circleHalfWidth * 2))
-
-          let left = x - (circleHalfWidth * 2 + 60)
+          let left = x - (circleHalfWidth + contentHeight)
           let overflow = Math.abs(w - (left + contentWidth))
           if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - (circleHalfWidth - 16)
+            this.content.left = left - overflow - (circleHalfWidth / 5)
           } else {
-            this.content.left = x - (circleHalfWidth * 2 + 60)
+            this.content.left = x - (circleHalfWidth + contentHeight)
           }
         }
       })
+    },
+    onClick (elementsPoint, x, y) {
+      var childsArray = []
+      allDescendants(this.$el, childsArray)
+      // var filterElementsPoint = elementsPoint.filter(f => !childsArray.includes(f))
+      // console.log(filterElementsPoint)
+      var ev = new MouseEvent('click', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true,
+        'screenX': x,
+        'screenY': y
+      })
+
+      var el = elementsPoint
+
+      el.dispatchEvent(ev)
     },
     closeTaregt () {
       this.open = false
@@ -286,7 +285,6 @@ export default {
     height: 88px
     border-radius: 50%
     position: absolute
-    transition: top 0.5s ease, left 0.5s ease
 
   .tap-target
     border-radius: 50%
@@ -300,14 +298,15 @@ export default {
     height: 88px
     z-index: 1000
     position: absolute
-    transition: all 0.5s ease
+    box-shadow: 0px 0px 0px 0px rgba(30, 143, 255, 0.719)
+    transition: box-shadow 0.5s ease
 
   .waves-effect
     width: 88px
     height: 88px
     border-radius: 50%
     animation: shadow-animate 1.5s infinite
-    transition: all 0.5s ease
+    transition:  box-shadow 0.5s ease
     position: absolute
 
   .content
@@ -321,7 +320,7 @@ export default {
     animation-iteration-count: 1
     text-align: left
     min-width: 220px
-    transition: all 0.5s ease
+    transition: opacity 0.5s ease
     padding: 0 20px
     text-align:justify
     brder: 1px solid red
@@ -334,4 +333,8 @@ export default {
     top: 0
     overflow: hidden
     z-index: 10003
+
+  .open
+    box-shadow: 0 0 0 278px #020506;
+
 </style>
