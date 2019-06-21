@@ -1,3 +1,5 @@
 module.exports = {
-  publicPath: '/feature-viscovery'
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/feature-viscovery/'
+    : '/'
 }
