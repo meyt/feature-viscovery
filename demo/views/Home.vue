@@ -39,7 +39,7 @@
 
 <script>
 // @ is an alias to /src
-import featureViscovery from '@/components/featureViscovery.vue'
+import featureViscovery from '../../src/feature-viscovery'
 
 export default {
   name: 'home',
