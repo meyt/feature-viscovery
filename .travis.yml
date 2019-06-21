@@ -15,9 +15,9 @@ script:
   - npm run build-bundle
 
 deploy:
-  - provider: script
-    script: "cp .npmrc.template $HOME/.npmrc && npm run build-bundle && npm publish"
-    skip_cleanup: true
+  - provider: npm
+    email: $NPM_API_EMAIL
+    api_key: $NPM_API_TOKEN
     on:
       tags: true
 
