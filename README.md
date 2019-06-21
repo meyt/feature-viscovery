@@ -1,6 +1,6 @@
 # feature-viscovery
 
-[![Build Status](https://travis-ci.org/meyt/Feature-discovery.svg?branch=master)](https://travis-ci.org/meyt/Feature-discovery)
+[![Build Status](https://travis-ci.org/meyt/feature-viscovery.svg?branch=master)](https://travis-ci.org/meyt/feature-viscovery)
 
 [Demo](https://meyt.github.io/feature-viscovery)
 
