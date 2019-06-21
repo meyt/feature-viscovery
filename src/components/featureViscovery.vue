@@ -1,6 +1,6 @@
 <template lang="pug">
   div.wrapper(v-if='open')
-    div.tap-target
+    div.tap-target(@click="propagateClick")
       div.overlay(:style="overlayStyle")
       div.circle(:style="circleStyle" ref="circle")
         div.waves-effect
@@ -59,13 +59,6 @@ function detectionCorner (x, y) {
 
   return 'noInCorner'
 }
-// function allDescendants (node, childsArray) {
-//   for (var i = 0; i < node.childNodes.length; i++) {
-//     var child = node.childNodes[i]
-//     childsArray.push(child)
-//     allDescendants(child, childsArray)
-//   }
-// }
 
 const defaultShadowSpread = 278
 
@@ -242,25 +235,22 @@ export default {
         }
       })
     },
-    onClick (elementsPoint, x, y, e) {
-      var childsArray = []
-      console.log('element  :  ---------')
-      var childNodes = this.$el.childNodes[0].childNodes
-      for (let i = 0; i < childNodes.length; i++) {
-        var child = childNodes[i].childNodes
-        childsArray.push(child)
+    propagateClick (e) {
+      const pointedElements = document.elementsFromPoint(e.clientX, e.clientY)
+      let targetElement = null
+      for (let pointedElement of pointedElements) {
+        if (this.$el.contains(pointedElement)) continue
+        targetElement = pointedElement
+        break
       }
-      childsArray.push(this.$el)
-      var filterElementsPoint = elementsPoint.filter(f => !childsArray.includes(f))
-      var ev = new MouseEvent('click', {
+
+      const clickEvent = new MouseEvent('click', {
         'view': window,
         'bubbles': true,
         'cancelable': true
       })
 
-      var el = filterElementsPoint[0]
-      // console.log(filterElementsPoint[0].event)
-      el.dispatchEvent(ev)
+      targetElement.dispatchEvent(clickEvent)
     },
     closeTaregt () {
       this.open = false

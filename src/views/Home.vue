@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.cotainer(@click="clickContainer")
+  div.cotainer(@click="openFeatureDiscovery")
     featureViscovery(ref='tap_target')
       h3 Title this text
       |Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -33,8 +33,8 @@
                 v-list-tile-title {{ item.title }}
       v-flex(xs10)
         div.text-lg-right
-          v-btn.open(color='success' @click= 'openTaregt()') open
-          v-btn.close(color='error' @click= 'closeTaregt()') close
+          v-btn.open(color='success' @click='openFeatureDiscovery') open
+          v-btn.close(color='error' @click='closeFeatureDiscovery') close
 </template>
 
 <script>
@@ -58,10 +58,10 @@ export default {
     }
   },
   methods: {
-    closeTaregt () {
+    closeFeatureDiscovery () {
       this.$refs.tap_target.closeTaregt()
     },
-    clickContainer (e) {
+    openFeatureDiscovery (e) {
       this.$refs.tap_target.openTaregt(e.clientX, e.clientY)
     }
   }
