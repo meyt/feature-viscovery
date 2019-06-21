@@ -200,7 +200,13 @@ export default {
       const clickEvent = new MouseEvent('click', {
         'view': window,
         'bubbles': true,
-        'cancelable': true
+        'cancelable': true,
+        'screenX': e.screenX,
+        'screenY': e.screenY,
+        'clientX': e.clientX,
+        'clientY': e.clientY,
+        'pageX': e.pageX,
+        'pageY': e.pageY
       })
 
       targetElement.dispatchEvent(clickEvent)
