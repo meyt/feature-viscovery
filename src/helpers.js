@@ -1,51 +1,27 @@
-export function getWindowDimention () {
+export function getWindowDimension () {
   return [
     Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
     Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
   ]
 }
 
-export function getZoneByPosition (x, y) {
-  const windowDimention = getWindowDimention()
-  const w = windowDimention[0]
-  const h = windowDimention[1]
+export function getQuarterName (w, h, x, y) {
   const xName = x < w / 2 ? 'Left' : 'Right'
   const yName = y < h / 2 ? 'top' : 'bottom'
   return [yName, xName].join('')
 }
 
-export function detectionCorner (x, y) {
-  const windowDimention = getWindowDimention()
-  const w = windowDimention[0]
-  const h = windowDimention[1]
-
+export function getCornerName (x, y, cornerWidth = 88, cornerHeight = 88) {
   // Standard material.io/feature-discovery mobile corner is 88px
-  const mobileCornerHeight = 88
-  const mobileCornerWidth = 88
+  const windowDimension = getWindowDimension()
+  const w = windowDimension[0]
+  const h = windowDimension[1]
 
-  // get Position Name was clicked
-  const positionName = getZoneByPosition(x, y)
+  if (x < cornerWidth && y < cornerHeight) return 'cornerTopLeft'
 
-  // corner topLeft
-  if (
-    positionName === 'topLeft' &&
-    x < mobileCornerWidth && y < mobileCornerHeight
-  ) return 'cornerTopLeft'
+  if (x < cornerWidth && y > h - cornerHeight) return 'cornerBottomLeft'
 
-  if (
-    positionName === 'bottomLeft' &&
-    x < mobileCornerWidth && (y > (h - mobileCornerHeight))
-  ) return 'cornerBottomLeft'
+  if (x > w - cornerWidth && y < cornerHeight) return 'cornerTopRight'
 
-  if (
-    positionName === 'topRight' &&
-    (x > (w - mobileCornerWidth) && y < mobileCornerHeight)
-  ) return 'cornerTopRight'
-
-  if (
-    positionName === 'bottomRight' &&
-    (x > (w - mobileCornerWidth) && (y > (h - mobileCornerHeight)))
-  ) return 'cornerBottomRight'
-
-  return 'noInCorner'
+  if (x > w - cornerWidth && y > h - cornerHeight) return 'cornerBottomRight'
 }

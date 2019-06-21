@@ -35,7 +35,7 @@ npm install --save feature-viscovery
     },
     methods: {
       openGuide (e) {
-        this.$refs.featureViscovery.openTarget(e.clientX, e.clientY)
+        this.$refs.featureViscovery.open(e.clientX, e.clientY)
       }
     }
   }

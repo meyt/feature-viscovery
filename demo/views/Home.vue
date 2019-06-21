@@ -59,10 +59,10 @@ export default {
   },
   methods: {
     closeFeatureDiscovery () {
-      this.$refs.tap_target.closeTaregt()
+      this.$refs.tap_target.close()
     },
     openFeatureDiscovery (e) {
-      this.$refs.tap_target.openTaregt(e.clientX, e.clientY)
+      this.$refs.tap_target.open(e.clientX, e.clientY)
     }
   }
 }

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.wrapper(v-if='open')
+  div.feature-viscovery.wrapper(v-if='opened')
     div.tap-target(@click.stop="propagateClick")
       div.overlay(:style="overlayStyle")
       div.circle(:style="circleStyle" ref="circle")
@@ -9,11 +9,12 @@
 </template>
 <script>
 import {
-  getWindowDimention,
-  getZoneByPosition,
-  detectionCorner
+  getWindowDimension,
+  getQuarterName,
+  getCornerName
 } from './helpers.js'
 const defaultShadowSpread = 278
+const contentPadding = 25
 
 export default {
   name: 'FeatureViscovery',
@@ -29,7 +30,7 @@ export default {
   },
   data () {
     return {
-      open: false,
+      opened: false,
       circle: {
         left: null,
         top: null,
@@ -84,109 +85,107 @@ export default {
       this.circle.shadowY = 0
       this.circle.shadowSpread = defaultShadowSpread
     },
-    openTaregt (x, y) {
-      this.open = true
+    open (x, y) {
+      this.opened = true
       this.$nextTick(() => {
-        // Content distance from top to circle or margin top
-        const contentDistanceToCircle = 25
-
-        const circleHalfHeight = this.$refs.circle.clientHeight / 2
-        const circleHalfWidth = this.$refs.circle.clientWidth / 2
-
-        const contentHeight = this.$refs.content.clientHeight
-        const contentWidth = this.$refs.content.clientWidth
-
-        this.circle.left = x - circleHalfHeight
-        this.circle.top = y - circleHalfWidth
-
-        var windowDimention = getWindowDimention()
-        var w = windowDimention[0]
-        this.overlay.shadowSpread = w + (w / 2)
-
-        var cornerName = detectionCorner(x, y)
-
-        // ------------- If point(x,y) was In Corner --------------------------
-        if (cornerName === 'cornerTopLeft') {
-          this.content.top = y + circleHalfHeight + contentDistanceToCircle
-          this.content.left = circleHalfWidth
-          this.resetCircleShadow()
-        }
-        if (cornerName === 'cornerBottomLeft') {
-          this.content.top = y - circleHalfHeight - contentHeight - contentDistanceToCircle
-          this.content.left = circleHalfWidth
-          this.resetCircleShadow()
-        }
-        if (cornerName === 'cornerTopRight') {
-          this.content.top = y + circleHalfHeight + contentDistanceToCircle
-          this.content.left = x - contentWidth
-          this.resetCircleShadow()
-        }
-        if (cornerName === 'cornerBottomRight') {
-          this.content.top = y - circleHalfHeight - contentHeight - contentDistanceToCircle
-          this.content.left = x - contentWidth
-          this.resetCircleShadow()
-        }
-
-        // --------- If point(x,y) wasn't In Corner now Detect areas-----------
-        var position = getZoneByPosition(x, y)
-
-        if (cornerName === 'noInCorner' && position === 'topLeft') {
-          this.circle.shadowX = circleHalfWidth
-          this.circle.shadowY = contentHeight
-          this.circle.shadowSpread = contentHeight + circleHalfHeight
-          this.content.top = y + circleHalfHeight + circleHalfHeight
-          let left = x - circleHalfHeight
-          let overflow = Math.abs(w - (left + contentWidth))
-          if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - (circleHalfWidth / 2)
-          } else if (x < circleHalfWidth) {
-            this.content.left = 0
-          } else {
-            this.content.left = left
-          }
-        }
-        if (cornerName === 'noInCorner' && position === 'topRight') {
-          this.circle.shadowX = -circleHalfWidth
-          this.circle.shadowY = contentHeight
-          this.circle.shadowSpread = contentHeight + circleHalfHeight
-          this.content.top = y + circleHalfHeight + circleHalfHeight
-          let left = x - (circleHalfWidth + contentHeight)
-          let overflow = Math.abs(w - (left + contentWidth))
-          if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - (circleHalfWidth / 5)
-          } else {
-            this.content.left = x - (circleHalfWidth + contentHeight)
-          }
-        }
-        if (cornerName === 'noInCorner' && position === 'bottomLeft') {
-          this.circle.shadowX = circleHalfWidth
-          this.circle.shadowY = -contentHeight
-          this.circle.shadowSpread = contentHeight + circleHalfHeight
-          this.content.top = (y - (contentHeight + (circleHalfWidth * 2)))
-          let left = x - circleHalfHeight
-          let overflow = Math.abs(w - (left + contentWidth))
-          if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - (circleHalfWidth / 2)
-          } else if (x < circleHalfWidth) {
-            this.content.left = 0
-          } else {
-            this.content.left = left
-          }
-        }
-        if (cornerName === 'noInCorner' && position === 'bottomRight') {
-          this.circle.shadowX = -circleHalfWidth
-          this.circle.shadowY = -contentHeight
-          this.circle.shadowSpread = contentHeight + circleHalfHeight
-          this.content.top = y - (contentHeight + (circleHalfWidth * 2))
-          let left = x - (circleHalfWidth + contentHeight)
-          let overflow = Math.abs(w - (left + contentWidth))
-          if ((contentWidth + left > w)) {
-            this.content.left = left - overflow - (circleHalfWidth / 5)
-          } else {
-            this.content.left = x - (circleHalfWidth + contentHeight)
-          }
-        }
+        this.openTarget(x, y)
       })
+    },
+    close () {
+      this.opened = false
+    },
+    openTarget (x, y) {
+      const diameter = this.$refs.circle.clientWidth
+      const radius = this.$refs.circle.clientWidth / 2
+
+      const contentHeight = this.$refs.content.clientHeight
+      const contentWidth = this.$refs.content.clientWidth
+
+      this.circle.left = x - radius
+      this.circle.top = y - radius
+
+      const windowDimension = getWindowDimension()
+      const w = windowDimension[0]
+      const h = windowDimension[1]
+      this.overlay.shadowSpread = w * 2
+
+      const fitContentHorizontally = () => {
+        const left = this.content.left
+        const overflow = Math.abs(w - (left + contentWidth))
+        if (contentWidth + left > w) {
+          this.content.left = left - overflow - contentPadding
+        } else if (x < radius) {
+          this.content.left = 0
+        }
+      }
+
+      const cornerName = getCornerName(x, y)
+      if (!cornerName) {
+        const quarterName = getQuarterName(w, h, x, y)
+        if (quarterName === 'topLeft') {
+          this.circle.shadowX = radius
+          this.circle.shadowY = contentHeight
+          this.circle.shadowSpread = contentHeight + radius
+          this.content.top = y + diameter
+          this.content.left = x - radius
+          fitContentHorizontally()
+          return
+        }
+        if (quarterName === 'topRight') {
+          this.circle.shadowX = -radius
+          this.circle.shadowY = contentHeight
+          this.circle.shadowSpread = contentHeight + contentHeight / 2
+          this.content.top = y + diameter
+          this.content.left = x - (radius + contentHeight)
+          fitContentHorizontally()
+          return
+        }
+        if (quarterName === 'bottomLeft') {
+          this.circle.shadowX = radius
+          this.circle.shadowY = -contentHeight
+          this.circle.shadowSpread = contentHeight + radius
+          this.content.top = y - (contentHeight + diameter)
+          this.content.left = x - radius
+          fitContentHorizontally()
+          return
+        }
+        if (quarterName === 'bottomRight') {
+          this.circle.shadowX = -radius
+          this.circle.shadowY = -contentHeight
+          this.circle.shadowSpread = contentHeight + radius
+          this.content.top = y - (contentHeight + diameter)
+          this.content.left = x - (radius + contentHeight)
+          fitContentHorizontally()
+          return
+        }
+      }
+
+      if (cornerName === 'cornerTopLeft') {
+        this.content.top = y + radius + contentPadding
+        this.content.left = radius
+        this.resetCircleShadow()
+        return
+      }
+
+      if (cornerName === 'cornerBottomLeft') {
+        this.content.top = y - radius - contentHeight - contentPadding
+        this.content.left = radius
+        this.resetCircleShadow()
+        return
+      }
+
+      if (cornerName === 'cornerTopRight') {
+        this.content.top = y + radius + contentPadding
+        this.content.left = x - contentWidth
+        this.resetCircleShadow()
+        return
+      }
+
+      if (cornerName === 'cornerBottomRight') {
+        this.content.top = y - radius - contentHeight - contentPadding
+        this.content.left = x - contentWidth
+        this.resetCircleShadow()
+      }
     },
     propagateClick (e) {
       const pointedElements = document.elementsFromPoint(e.clientX, e.clientY)
@@ -210,9 +209,6 @@ export default {
       })
 
       targetElement.dispatchEvent(clickEvent)
-    },
-    closeTaregt () {
-      this.open = false
     }
   }
 }
@@ -232,61 +228,59 @@ export default {
     100%
       opacity 1
 
-  .overlay
-    width: 88px
-    height: 88px
-    border-radius: 50%
-    position: absolute
+  $targetDiameter = 88px
 
-  .tap-target
-    border-radius: 50%
-    z-index: 1000
-    box-sizing: inherit
-    position: absolute
-
-  .circle
-    border-radius: 50%
-    width: 88px
-    height: 88px
-    z-index: 1000
-    position: absolute
-    box-shadow: 0px 0px 0px 0px rgba(30, 143, 255, 0.719)
-    transition: box-shadow 0.5s ease
-
-  .waves-effect
-    width: 88px
-    height: 88px
-    border-radius: 50%
-    animation: shadow-animate 1.5s infinite
-    transition:  box-shadow 0.5s ease
-    position: absolute
-
-  .content
-    font-size: 0.9rem
-    lineHeight: 1.6
-    color: #fff
-    max-width: 220px
-    z-index: 1002
-    position: absolute
-    animation: fade-content 4s
-    animation-iteration-count: 1
-    text-align: left
-    min-width: 220px
-    transition: opacity 0.5s ease
-    padding: 0 20px
-    text-align:justify
-    brder: 1px solid red
-
-  .wrapper
+  .feature-viscovery
+    box-shadow: 0 0 0 278px #020506
     position: fixed
     height: 100%
     width: 100%
     left: 0
     top: 0
     overflow: hidden
-    z-index: 10003
+    z-index: 10
 
-  .open
-    box-shadow: 0 0 0 278px #020506;
+    .overlay
+      width: $targetDiameter
+      height: $targetDiameter
+      border-radius: 50%
+      position: absolute
+
+    .tap-target
+      border-radius: 50%
+      box-sizing: inherit
+      position: absolute
+
+    .circle
+      border-radius: 50%
+      width: $targetDiameter
+      height: $targetDiameter
+      position: absolute
+      box-shadow: 0px 0px 0px 0px rgba(30, 143, 255, 0.719)
+      transition: box-shadow 0.5s ease
+
+    .waves-effect
+      width: $targetDiameter
+      height: $targetDiameter
+      border-radius: 50%
+      animation: shadow-animate 1.5s infinite
+      transition:  box-shadow 0.5s ease
+      position: absolute
+
+    .content
+      font-size: 0.9rem
+      lineHeight: 1.6
+      color: #fff
+      max-width: 220px
+      z-index: 1002
+      position: absolute
+      animation: fade-content 4s
+      animation-iteration-count: 1
+      text-align: left
+      min-width: 220px
+      transition: opacity 0.5s ease
+      padding: 0 20px
+      text-align:justify
+      brder: 1px solid red
 
 </style>
