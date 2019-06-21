@@ -1,29 +1,43 @@
 # feature-viscovery
 
-## Project setup
+[![Build Status](https://travis-ci.org/meyt/Feature-discovery.svg?branch=master)](https://travis-ci.org/meyt/Feature-discovery)
+
+[Demo](https://meyt.github.io/feature-viscovery)
+
+## Install
+
 ```
-npm install
+npm install --save feature-viscovery
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Usage
 
-### Compiles and minifies for production
-```
-npm run build
-```
+```vue
+  <template>
+    <div>
+      <feature-viscovery ref="featureViscovery">
+        <h3>Title this text</h3>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Quam expedita laborum nemo! Illo eaque iste explicabo. Vel animi
+        </p>
+      </feature-viscovery>
 
-### Run your tests
-```
-npm run test
-```
+      <button @click="openGuide">Open</button>
+    </div>
+  </template>
 
-### Lints and fixes files
+  <script>
+  import featureViscovery from 'feature-viscovery'
+  export default {
+    components: {
+      featureViscovery
+    },
+    methods: {
+      openGuide (e) {
+        this.$refs.featureViscovery.openTarget(e.clientX, e.clientY)
+      }
+    }
+  }
+  </script>
 ```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
