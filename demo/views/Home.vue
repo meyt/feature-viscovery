@@ -34,7 +34,7 @@
       v-flex(xs10)
         div.text-lg-right
           v-btn.open(color='success' @click='openFeatureDiscovery') open
-          v-btn.close(color='error' @click='closeFeatureDiscovery') close
+          v-btn.close(color='error' @click.stop='closeFeatureDiscovery') close
 </template>
 
 <script>

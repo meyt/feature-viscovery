@@ -1,6 +1,6 @@
 <template lang="pug">
   div.wrapper(v-if='open')
-    div.tap-target(@click="propagateClick")
+    div.tap-target(@click.stop="propagateClick")
       div.overlay(:style="overlayStyle")
       div.circle(:style="circleStyle" ref="circle")
         div.waves-effect
