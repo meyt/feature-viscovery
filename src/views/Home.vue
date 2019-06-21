@@ -58,22 +58,11 @@ export default {
     }
   },
   methods: {
-    openTaregt (x, y) {
-      this.$refs.tap_target.openTaregt(x, y)
-    },
     closeTaregt () {
       this.$refs.tap_target.closeTaregt()
     },
-    onClick (elementsPoint, x, y) {
-      this.$refs.tap_target.onClick(elementsPoint, x, y)
-    },
     clickContainer (e) {
-      var x = e.clientX
-      var y = e.clientY
-      var elementsPoint = document.elementsFromPoint(x, y)
-      console.log('--------------------')
-      this.openTaregt(x, y, elementsPoint)
-      this.onClick(elementsPoint, x, y)
+      this.$refs.tap_target.openTaregt(e.clientX, e.clientY)
     }
   }
 }
