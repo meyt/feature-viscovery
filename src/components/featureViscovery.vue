@@ -59,13 +59,13 @@ function detectionCorner (x, y) {
 
   return 'noInCorner'
 }
-function allDescendants (node, childsArray) {
-  for (var i = 0; i < node.childNodes.length; i++) {
-    var child = node.childNodes[i]
-    childsArray.push(child)
-    allDescendants(child, childsArray)
-  }
-}
+// function allDescendants (node, childsArray) {
+//   for (var i = 0; i < node.childNodes.length; i++) {
+//     var child = node.childNodes[i]
+//     childsArray.push(child)
+//     allDescendants(child, childsArray)
+//   }
+// }
 
 const defaultShadowSpread = 278
 
@@ -242,21 +242,24 @@ export default {
         }
       })
     },
-    onClick (elementsPoint, x, y) {
+    onClick (elementsPoint, x, y, e) {
       var childsArray = []
-      allDescendants(this.$el, childsArray)
-      // var filterElementsPoint = elementsPoint.filter(f => !childsArray.includes(f))
-      // console.log(filterElementsPoint)
+      console.log('element  :  ---------')
+      var childNodes = this.$el.childNodes[0].childNodes
+      for (let i = 0; i < childNodes.length; i++) {
+        var child = childNodes[i].childNodes
+        childsArray.push(child)
+      }
+      childsArray.push(this.$el)
+      var filterElementsPoint = elementsPoint.filter(f => !childsArray.includes(f))
       var ev = new MouseEvent('click', {
         'view': window,
         'bubbles': true,
-        'cancelable': true,
-        'screenX': x,
-        'screenY': y
+        'cancelable': true
       })
 
-      var el = elementsPoint
-
+      var el = filterElementsPoint[0]
+      // console.log(filterElementsPoint[0].event)
       el.dispatchEvent(ev)
     },
     closeTaregt () {

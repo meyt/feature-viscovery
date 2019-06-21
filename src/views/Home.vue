@@ -35,10 +35,6 @@
         div.text-lg-right
           v-btn.open(color='success' @click= 'openTaregt()') open
           v-btn.close(color='error' @click= 'closeTaregt()') close
-    div.purple
-    div.blue
-    div.lime
-    div.red
 </template>
 
 <script>
@@ -68,16 +64,16 @@ export default {
     closeTaregt () {
       this.$refs.tap_target.closeTaregt()
     },
-    onClick (elementsPoint) {
-      this.$refs.tap_target.onClick(elementsPoint)
+    onClick (elementsPoint, x, y) {
+      this.$refs.tap_target.onClick(elementsPoint, x, y)
     },
     clickContainer (e) {
       var x = e.clientX
       var y = e.clientY
       var elementsPoint = document.elementsFromPoint(x, y)
       console.log('--------------------')
-      this.openTaregt(x, y)
-      this.onClick(elementsPoint)
+      this.openTaregt(x, y, elementsPoint)
+      this.onClick(elementsPoint, x, y)
     }
   }
 }
@@ -112,5 +108,8 @@ export default {
   .red {
     left: 50%!important;
     top: 50%!important;
+  }
+  .text-lg-right {
+    background: white
   }
 </style>
