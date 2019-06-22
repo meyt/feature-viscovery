@@ -5,11 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve ./demo/main.js",
     "build": "vue-cli-service build ./demo/main.js",
-    "build-bundle": "rollup -c",
+    "build-bundle": "rm -rf ./dist && rollup -c",
     "lint": "vue-cli-service lint"
   },
   "files": [
-    "/dist"
+    "dist/*"
   ],
   "main": "dist/feature-viscovery.cjs.js",
   "module": "dist/feature-viscovery.esm.js",
