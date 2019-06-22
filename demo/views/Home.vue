@@ -1,6 +1,7 @@
 <template lang="pug">
   div.cotainer(@click="openFeatureDiscovery")
-    featureViscovery(ref='tap_target')
+    featureViscovery(ref='tap_target' boxShadowColor='rgba(30, 143, 255, 0.719)'
+                     waveColor='white')
       h3 Title this text
       |Lorem ipsum dolor sit amet consectetur adipisicing elit.
       |Quam expedita laborum nemo! Illo eaque iste explicabo. Vel animi

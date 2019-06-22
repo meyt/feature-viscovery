@@ -3,7 +3,7 @@
     div.tap-target(@click.stop="propagateClick")
       div.overlay(:style="overlayStyle")
       div.circle(:style="circleStyle" ref="circle")
-        div.waves-effect
+        div.waves-effect(:style="waveEffectStyle")
       div.content(:style="contentStyle" ref="content")
         slot
 </template>
@@ -26,6 +26,10 @@ export default {
     overlayColor: {
       type: String,
       default: 'rgba(0, 0, 0, 0.35)'
+    },
+    waveColor: {
+      type: String,
+      default: '#ffffff'
     }
   },
   data () {
@@ -76,6 +80,11 @@ export default {
           this.overlay.shadowSpread + 'px',
           this.overlayColor
         ].join(' ')
+      }
+    },
+    waveEffectStyle () {
+      return {
+        color: this.waveColor
       }
     }
   },
@@ -215,20 +224,21 @@ export default {
 </script>
 
 <style lang="stylus">
+  $targetDiameter = 88px
 
   @keyframes shadow-animate
     0%
-      box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2)
+      box-shadow: 0 0 0 0px
+      opacity: 0.6
     100%
-      box-shadow: 0 0 0 20px rgba(0, 0, 0, 0)
+      box-shadow: 0 0 0 25px
+      opacity: 0
 
   @keyframes fade-content
     0%
       opacity  0
     100%
       opacity 1
-
-  $targetDiameter = 88px
 
   .feature-viscovery
     box-shadow: 0 0 0 278px #020506
@@ -263,8 +273,8 @@ export default {
       width: $targetDiameter
       height: $targetDiameter
       border-radius: 50%
-      animation: shadow-animate 1.5s infinite
-      transition:  box-shadow 0.5s ease
+      animation: shadow-animate 1s infinite
+      transition:  box-shadow 1s ease
       position: absolute
 
     .content
