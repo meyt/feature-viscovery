@@ -29,6 +29,8 @@ npm install --save feature-viscovery
 
   <script>
   import featureViscovery from 'feature-viscovery'
+  import 'feature-viscovery/dist/feature-viscovery.esm.css'
+
   export default {
     components: {
       featureViscovery
