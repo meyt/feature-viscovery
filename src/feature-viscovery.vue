@@ -19,7 +19,7 @@ const contentPadding = 25
 export default {
   name: 'FeatureViscovery',
   props: {
-    boxShadowColor: {
+    backgroundColor: {
       type: String,
       default: 'rgba(30, 143, 255, 0.719)'
     },
@@ -71,7 +71,7 @@ export default {
           this.circle.shadowY + 'px',
           '0',
           this.circle.shadowSpread + 'px',
-          this.boxShadowColor
+          this.backgroundColor
         ].join(' ')
       }
     },
