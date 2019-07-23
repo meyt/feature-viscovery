@@ -1,11 +1,11 @@
 <template lang="pug">
-  div.feature-viscovery.wrapper(v-if='opened')
+  div.feature-viscovery.wrapper(v-if='opened' @click="_dismiss")
+    div.overlay(:style="overlayStyle")
     div.tap-target(@click.stop="propagateClick")
-      div.overlay(:style="overlayStyle")
-      div.circle(:style="circleStyle" ref="circle")
-        div.waves-effect(:style="waveEffectStyle")
-      div.content(:style="contentStyle" ref="content")
-        slot
+    div.circle(:style="circleStyle" ref="circle")
+      div.waves-effect(:style="waveEffectStyle")
+    div.content(:style="contentStyle" ref="content")
+      slot
 </template>
 <script>
 import {
@@ -30,6 +30,10 @@ export default {
     waveColor: {
       type: String,
       default: '#ffffff'
+    },
+    noDismiss: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -89,6 +93,11 @@ export default {
     }
   },
   methods: {
+    _dismiss (e) {
+      if (e.target !== this.$el) return
+      if (this.noDismiss) return
+      this.close()
+    },
     resetCircleShadow () {
       this.circle.shadowX = 0
       this.circle.shadowY = 0
