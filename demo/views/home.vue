@@ -88,7 +88,7 @@ export default {
     Lorem ipsum dolor sit amet consectetur adipisicing elit.
     Quam expedita laborum nemo! Illo eaque iste explicabo. Vel animi
   </div>
-</feature-discovery>`
+</feature-viscovery>`
     },
     snippetScript () {
       return `$refs.guide.open(${this.left}, ${this.top})`
