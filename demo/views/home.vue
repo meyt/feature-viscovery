@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     snippetTemplate () {
-      return `<feature-viscovery 
+      return `<feature-viscovery
   ref="guide"
   background-color="${this.backgroundColor}"
   wave-color="${this.waveColor}"

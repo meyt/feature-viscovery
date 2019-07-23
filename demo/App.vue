@@ -1,8 +1,8 @@
 <template lang="pug">
   v-app(:class="[$route.name]")
     v-toolbar(flat style="background-color: transparent")
-      v-toolbar-title 
-        a(href="https://github.com/meyt/feature-viscovery" target="_blank") 
+      v-toolbar-title
+        a(href="https://github.com/meyt/feature-viscovery" target="_blank")
          | feature-visocvery demo
       v-spacer
       v-toolbar-items
@@ -28,8 +28,8 @@
 body
   margin 0px
 
-a 
-  text-decoration: none 
+a
+  text-decoration: none
   color: #444 !important
 
 pre
