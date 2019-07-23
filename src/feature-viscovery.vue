@@ -34,6 +34,10 @@ export default {
     noDismiss: {
       type: Boolean,
       default: false
+    },
+    autoAimDelay: {
+      type: Number,
+      default: 500
     }
   },
   data () {
@@ -52,7 +56,9 @@ export default {
       },
       overlay: {
         shadowSpread: null
-      }
+      },
+      targetElTop: 0,
+      targetElLeft: 0
     }
   },
   computed: {
@@ -92,6 +98,18 @@ export default {
       }
     }
   },
+  watch: {
+    targetElTop (newVal) {
+      this.$nextTick(() => {
+        this.openTarget(this.targetElLeft, newVal)
+      })
+    },
+    targetElLeft (newVal) {
+      this.$nextTick(() => {
+        this.openTarget(newVal, this.targetElTop)
+      })
+    }
+  },
   methods: {
     _dismiss (e) {
       if (e.target !== this.$el) return
@@ -105,12 +123,20 @@ export default {
     },
     open (x, y) {
       this.opened = true
+      if (x instanceof HTMLElement) {
+        this.__targetEl = x
+        this.autoAim()
+        this.startAutoAim()
+        x = this.targetElLeft
+        y = this.targetElTop
+      }
       this.$nextTick(() => {
         this.openTarget(x, y)
       })
     },
     close () {
       this.opened = false
+      this.stopAutoAim()
     },
     openTarget (x, y) {
       const diameter = this.$refs.circle.clientWidth
@@ -227,7 +253,26 @@ export default {
       })
 
       targetElement.dispatchEvent(clickEvent)
+    },
+    autoAim () {
+      if (!this.__targetEl) return
+      if (!this.opened) return
+      const bounding = this.__targetEl.getBoundingClientRect()
+      this.targetElTop = bounding.top + bounding.height / 2
+      this.targetElLeft = bounding.left + bounding.width / 2
+    },
+    startAutoAim () {
+      if (typeof this.__aimInterval !== 'undefined') return
+      this.__aimInterval = window.setInterval(this.autoAim, this.autoAimDelay)
+    },
+    stopAutoAim () {
+      if (!this.__aimInterval) return
+      window.clearInterval(this.__aimInterval)
+      delete this.__aimInterval
     }
+  },
+  beforeDestroy () {
+    this.stopAutoAim()
   }
 }
 </script>
