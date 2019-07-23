@@ -32,6 +32,12 @@
           v-model="top"
           hide-details
         )
+      v-flex.px-1
+        v-text-field(
+          label="Diameter"
+          v-model="diameter"
+          hide-details
+        )
 
     pre(v-text="snippetTemplate")
     pre(v-text="snippetScript")
@@ -47,6 +53,7 @@
       :background-color="backgroundColor"
       :wave-color="waveColor"
       :overlay-color="overlayColor"
+      :diameter="parseInt(diameter)"
     )
       h3 Title this text
       |Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -63,7 +70,8 @@ export default {
       waveColor: '#ffffff',
       overlayColor: 'rgba(0, 0, 0, 0.35)',
       left: 20,
-      top: 20
+      top: 20,
+      diameter: 88
     }
   },
   computed: {
@@ -73,6 +81,7 @@ export default {
   background-color="${this.backgroundColor}"
   wave-color="${this.waveColor}"
   overlay-color="${this.overlayColor}"
+  :diameter="${this.diameter}"
 >
   <h3>Title this text</h3>
   <div>

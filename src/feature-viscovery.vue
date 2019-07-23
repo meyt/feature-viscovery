@@ -38,6 +38,10 @@ export default {
     autoAimDelay: {
       type: Number,
       default: 500
+    },
+    diameter: {
+      type: Number,
+      default: 88
     }
   },
   data () {
@@ -66,6 +70,8 @@ export default {
       return {
         top: this.circle.top === null ? null : this.circle.top + 'px',
         left: this.circle.left === null ? null : this.circle.left + 'px',
+        width: this.diameter + 'px',
+        height: this.diameter + 'px',
         boxShadow: [
           this.circle.shadowX + 'px',
           this.circle.shadowY + 'px',
@@ -85,6 +91,8 @@ export default {
       return {
         top: this.content.top === null ? null : this.circle.top + 'px',
         left: this.content.left === null ? null : this.circle.left + 'px',
+        width: this.diameter + 'px',
+        height: this.diameter + 'px',
         boxShadow: [
           '0px', '0px', '0px',
           this.overlay.shadowSpread + 'px',
@@ -94,7 +102,9 @@ export default {
     },
     waveEffectStyle () {
       return {
-        color: this.waveColor
+        color: this.waveColor,
+        width: this.diameter + 'px',
+        height: this.diameter + 'px'
       }
     }
   },
