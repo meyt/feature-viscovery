@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Home from './views/home.vue'
+import Coordinate from './views/coordinate.vue'
+import AutoAim from './views/auto-aim.vue'
 
 Vue.use(Router)
 
@@ -12,6 +14,16 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/coordinate',
+      name: 'coordinate',
+      component: Coordinate
+    },
+    {
+      path: '/auto-aim',
+      name: 'autoaim',
+      component: AutoAim
     }
   ]
 })
