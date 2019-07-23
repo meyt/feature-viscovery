@@ -3,7 +3,7 @@
     v-toolbar(flat style="background-color: transparent")
       v-toolbar-title
         a(href="https://github.com/meyt/feature-viscovery" target="_blank")
-         | feature-visocvery demo
+         | feature-viscovery demo
       v-spacer
       v-toolbar-items
         v-btn(to="/" flat) basic
