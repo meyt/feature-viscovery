@@ -93,6 +93,11 @@ export default {
     snippetScript () {
       return `$refs.guide.open(${this.left}, ${this.top})`
     }
+  },
+  metaInfo () {
+    return {
+      title: 'feature-viscovery demo'
+    }
   }
 }
 </script>

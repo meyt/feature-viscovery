@@ -33,6 +33,11 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('click', this.onClick)
+  },
+  metaInfo () {
+    return {
+      title: 'coordinate - feature-viscovery demo'
+    }
   }
 }
 </script>

@@ -31,6 +31,11 @@ export default {
       snippetTemplate: '<button ref="targetButton">Run!</button>\n<feature-viscovery ref="guide" :auto-aim-delay="500">',
       snippetScript: '$refs.guide.open($refs.targetButton.$el)'
     }
+  },
+  metaInfo () {
+    return {
+      title: 'auto-aim - feature-viscovery demo'
+    }
   }
 }
 </script>
