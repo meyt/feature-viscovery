@@ -1,6 +1,6 @@
 {
   "name": "feature-viscovery",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Feature discovery component for vuejs",
   "scripts": {
     "serve": "vue-cli-service serve ./demo/main.js",
